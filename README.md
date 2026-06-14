@@ -1,3 +1,15 @@
+---
+title: candiRank
+emoji: 🚀
+colorFrom: purple
+colorTo: pink
+sdk: gradio
+sdk_version: 4.44.1
+python_version: 3.10.13
+app_file: app.py
+pinned: false
+---
+
 # 🚀 candiRank: High-Precision Candidate Retrieval System
 
 [![Python](https://img.shields.io/badge/Python-3.10-blue?logo=python&logoColor=white)](https://www.python.org/)
