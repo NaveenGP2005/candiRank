@@ -52,11 +52,11 @@ The ranking methodology is a 5-stage funnel:
 ## 4. Explainability & Data Validation
 
 **How are ranking decisions explained & how do you prevent hallucinations?**  
-candiRank features a deterministic Natural Language Generator (NLG) that outputs exact justifications for *why* a candidate was chosen. Because the NLG operates purely on extracted feature flags and quantitative metrics (e.g., Verified YOE, specific extracted frameworks) rather than relying on generative LLM synthesis, it is mathematically impossible for the system to hallucinate candidate skills.
+candiRank features a deterministic Natural Language Generator (NLG) that outputs exact justifications for *why* a candidate was chosen. Because the NLG operates purely on extracted feature flags and quantitative metrics (e.g., Verified YOE, specific extracted frameworks) rather than relying on generative LLM synthesis, it cannot introduce unsupported skills because every explanation is generated only from extracted candidate attributes and verified feature flags.
 
 **How does your solution handle inconsistent, low-quality, or suspicious profiles?**  
 We implemented a strict chronological **Honeypot Filter**. 
-*   If a timeline is mathematically impossible, the candidate is aggressively hard-deleted from the pool (we successfully eliminated 3.1% of the dataset as fraudulent). 
+*   If a timeline is mathematically impossible, the candidate is removed from the candidate pool (we filtered approximately 3.1% of profiles that exhibited impossible or highly inconsistent career timelines). 
 *   If a candidate presents highly suspicious, unverified skills (advanced concepts with suspiciously low YOE), the system applies an automated Soft-Penalty, degrading their RRF score.
 
 ---
@@ -102,8 +102,8 @@ Our heuristic anchor directly reflects the Job Description's hardest constraints
 
 **How does your solution meet the challenge’s runtime and compute constraints?**  
 candiRank is heavily optimized for CPU-only execution. While embedding 100,000 profiles would take hours, our Lexical first-pass architecture reduces the embedding workload to just 1,000 profiles. 
-*   **Total execution time for 100,000 candidates:** `approximately 215 seconds`.
-*   **Competition Budget:** `290.0 seconds`.
+*   **Total execution time for 100,000 candidates:** `~215 seconds`
+*   **Competition budget:** `290 seconds`
 *   *We comfortably process the entire dataset, end-to-end, with over a minute to spare on standard CPU hardware.*
 
 ---
@@ -113,7 +113,7 @@ candiRank is heavily optimized for CPU-only execution. While embedding 100,000 p
 *   **FlashText:** Implements the Aho-Corasick algorithm for extracting hundreds of technical keywords simultaneously in `O(N)` time.
 *   **Rank-BM25:** A highly optimized implementation of BM25 for rapid, high-recall lexical search.
 *   **BAAI/bge-small-en-v1.5 & PyTorch:** Selected for its strong retrieval quality and efficient CPU inference, generating dense representations of the Top 1,000 candidates locally.
-*   **Gradio & Hugging Face Spaces:** Used to instantly deploy an interactive, premium frontend application without complex React/Node.js boilerplate, allowing judges to test the ranking logic dynamically.
+*   **Gradio & Hugging Face Spaces:** Used to instantly deploy an interactive frontend application without complex React/Node.js boilerplate, allowing judges to test the ranking logic dynamically.
 
 ---
 

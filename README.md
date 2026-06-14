@@ -62,7 +62,7 @@ graph TD
 
 ### 1. Robust Honeypot & Fraud Filter `O(N)`
 * **Chronological Validation:** Uses strict checks (date parsing, overlapping full-time employment vs. undergraduate studies) and heuristic YOE anomaly detection to catch synthetic anomalies.
-* **Smart Soft-Penalties:** Rather than broadly penalizing non-traditional paths (like freelance work during college), only mathematically impossible timelines are hard-removed (dropping rejection rates to **3.1%**). Suspicious profiles receive an automated soft penalty.
+* **Smart Soft-Penalties:** Rather than broadly penalizing non-traditional paths (like freelance work during college), only mathematically impossible timelines are removed (we filtered approximately 3.1% of profiles that exhibited impossible or highly inconsistent career timelines). Suspicious profiles receive an automated soft penalty.
 
 ### 2. FlashText Feature Engineering `O(N)`
 * **Aho-Corasick Automaton:** Extracts over 20 specific technical features across 5 core verticals (Vector DBs, Search/Retrieval, Ranking/Evaluation, ML Frameworks, MLOps) instantly.
@@ -96,7 +96,7 @@ candiRank is heavily optimized for CPU-only execution. On a standard CPU instanc
 | **BM25 Retrieval** | `12.8s` | Lexical Index |
 | **BGE Embeddings** | `164.4s` | PyTorch CPU (Top 1000) |
 | **Rerank & NLG** | `1.1s` | Numpy Heuristics |
-| **Total Runtime** | **`approximately 215 seconds`** | **Budget: `290.0s`** |
+| **Total Runtime** | **`~215 seconds`** | **Budget: `290s`** |
 
 ---
 
