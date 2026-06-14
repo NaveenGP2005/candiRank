@@ -117,4 +117,4 @@ if __name__ == "__main__":
     print("\n[3/3] Training LightGBM model...")
     train_lgb_model(args.sample)
 
-    print("\n✓ Precompute complete. Run rank.py to generate submission.")
+    print("\nPrecompute complete. Run rank.py to generate submission.")
