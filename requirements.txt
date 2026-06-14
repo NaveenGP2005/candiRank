@@ -10,8 +10,9 @@ optimum[onnxruntime]>=1.16.0
 onnxruntime>=1.16.0
 transformers>=4.35.0
 sentence-transformers>=2.2.0
-gradio>=4.0.0
 pyyaml>=6.0
 tqdm>=4.65.0
 pandas>=2.0.0
-pyaudioop
+gradio==4.44.1
+fastapi==0.112.2
+starlette==0.37.2

@@ -218,7 +218,8 @@ def build_app():
                 results_table = gr.Dataframe(
                     headers=["Rank", "Candidate ID", "Score", "Score Bar", "Reasoning (preview)"],
                     value=format_results_table(RESULTS, top_n=25),
-                    interactive=False
+                    interactive=False,
+                    wrap=True,
                 )
 
                 filter_btn = gr.Button("🔍 Apply Filter", variant="primary")
@@ -291,7 +292,4 @@ def build_app():
 
 if __name__ == "__main__":
     app = build_app()
-    app.launch(
-        server_name="0.0.0.0",
-        show_error=True
-    )
+    app.launch()
