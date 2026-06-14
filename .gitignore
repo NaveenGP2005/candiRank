@@ -1,2 +1,28 @@
+# Dataset (too large for git)
 *.jsonl
 dataset/
+
+# Python virtual environment
+venv/
+.venv/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# Artifacts (large model files - regenerated via precompute.py)
+artifacts/
+
+# Submission CSVs (generated outputs)
+submission*.csv
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
