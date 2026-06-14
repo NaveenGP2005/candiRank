@@ -10,6 +10,7 @@ MODEL_PATH = ARTIFACTS_DIR / "lgb_model.lgb"
 
 FEATURE_COLS = [
     "bm25_score", "semantic_score", "rrf_score",
+    "honeypot_soft_flag",
     "yoe_total", "yoe_applied_ml", "yoe_pre_llm_ml",
     "seniority_tier", "avg_tenure_months", "product_company_ratio",
     "consulting_only_flag",

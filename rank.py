@@ -54,7 +54,7 @@ def main():
     parser = argparse.ArgumentParser(description="Redrob candidate ranker")
     parser.add_argument("--candidates", required=True, help="Path to candidates.jsonl or .jsonl.gz")
     parser.add_argument("--out", default="submission.csv", help="Output CSV path")
-    parser.add_argument("--top-k-bm25", type=int, default=1000, help="BM25 first-pass top-K")
+    parser.add_argument("--top-k-bm25", type=int, default=600, help="BM25 first-pass top-K")
     parser.add_argument("--top-k-rrf", type=int, default=500, help="RRF shortlist size")
     parser.add_argument("--demo", action="store_true", help="Demo mode: only process first 500 candidates")
     args = parser.parse_args()
@@ -190,8 +190,8 @@ def main():
             s *= max(0.7, 1.0 - (notice - 90) / 180)
         penalized.append((cid, s))
 
-    # Sort again after penalties and take top 100
-    penalized.sort(key=lambda x: x[1], reverse=True)
+    # Sort again after penalties, tie-break by candidate_id ASC (validator requirement)
+    penalized.sort(key=lambda x: (-x[1], x[0]))
     top_100_penalized = penalized[:100]
 
     # Normalize scores to [0, 100]
@@ -200,9 +200,11 @@ def main():
         min_s = top_100_penalized[-1][1]
         score_range = max_s - min_s if max_s != min_s else 1.0
         top_100 = [
-            (cid, round(100.0 * (s - min_s) / score_range, 4))
+            (cid, round(100.0 * (s - min_s) / score_range, 6))
             for cid, s in top_100_penalized
         ]
+        # Final sort after rounding (rounding can create new ties) — tie-break candidate_id ASC
+        top_100.sort(key=lambda x: (-x[1], x[0]))
     else:
         top_100 = top_100_penalized
 

@@ -294,6 +294,8 @@ def extract_features(candidate: dict) -> dict:
 
     return {
         "candidate_id": candidate["candidate_id"],
+        # Honeypot soft flag (suspicious but not hard-filtered)
+        "honeypot_soft_flag": int(candidate.get("_honeypot_soft_flag", False)),
         # YOE
         "yoe_total": yoe_total,
         "yoe_applied_ml": yoe_applied_ml,

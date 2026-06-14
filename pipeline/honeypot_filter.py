@@ -182,40 +182,59 @@ def check_impossible_experience(candidate: dict) -> tuple[bool, str]:
 
 def filter_honeypots(candidates: list[dict], verbose: bool = False) -> tuple[list[dict], list[dict]]:
     """
-    Returns (clean_candidates, flagged_honeypots).
-    Flagged candidates get a honeypot_reason key for debugging.
+    Returns (clean_candidates, hard_flagged_honeypots).
+
+    Hard filters (mathematically impossible — hard remove):
+      - TEMPORAL: senior role heavily overlapping undergrad
+      - IMPOSSIBLE_EXP: YOE far exceeds graduation year
+
+    Soft flags (suspicious but could be real — keep candidate, add penalty flag):
+      - SKILL_HALLUCINATION: skill claimed but missing from career text
+      - DOMAIN_INCOHERENCE: non-tech career + advanced tech skills
+
+    Soft-flagged candidates stay in the pool but get _honeypot_soft_flag=True,
+    which the feature engineer uses as a penalty signal.
     """
     clean = []
     flagged = []
 
     for c in candidates:
-        reasons = []
+        hard_reasons = []
+        soft_reasons = []
 
+        # ── Hard filters (impossible timelines) ─────────────────────────────
         is_temp, reason = check_temporal_impossibility(c)
         if is_temp:
-            reasons.append(f"TEMPORAL: {reason}")
-
-        is_hall, reason = check_skill_hallucination(c)
-        if is_hall:
-            reasons.append(f"SKILL_HALLUCINATION: {reason}")
-
-        is_incoherent, reason = check_domain_incoherence(c)
-        if is_incoherent:
-            reasons.append(f"DOMAIN_INCOHERENCE: {reason}")
+            hard_reasons.append(f"TEMPORAL: {reason}")
 
         is_impossible, reason = check_impossible_experience(c)
         if is_impossible:
-            reasons.append(f"IMPOSSIBLE_EXP: {reason}")
+            hard_reasons.append(f"IMPOSSIBLE_EXP: {reason}")
 
-        if reasons:
-            c["_honeypot_reasons"] = reasons
+        # ── Soft flags (suspicious but keep) ────────────────────────────────
+        is_hall, reason = check_skill_hallucination(c)
+        if is_hall:
+            soft_reasons.append(f"SKILL_HALLUCINATION: {reason}")
+
+        is_incoherent, reason = check_domain_incoherence(c)
+        if is_incoherent:
+            soft_reasons.append(f"DOMAIN_INCOHERENCE: {reason}")
+
+        if hard_reasons:
+            c["_honeypot_reasons"] = hard_reasons + soft_reasons
             flagged.append(c)
             if verbose:
-                print(f"  [HONEYPOT] {c['candidate_id']}: {reasons[0]}")
+                print(f"  [HONEYPOT] {c['candidate_id']}: {hard_reasons[0]}")
         else:
+            # Soft-flagged candidates stay in pool with a penalty flag
+            if soft_reasons:
+                c["_honeypot_soft_flag"] = True
+                c["_soft_reasons"] = soft_reasons
             clean.append(c)
 
-    print(f"[honeypot] {len(flagged)} flagged, {len(clean)} clean from {len(candidates)} total")
+    print(f"[honeypot] {len(flagged)} hard-removed, {len(clean)} clean "
+          f"(of which {sum(1 for c in clean if c.get('_honeypot_soft_flag'))} soft-flagged) "
+          f"from {len(candidates)} total")
     return clean, flagged
 
 
