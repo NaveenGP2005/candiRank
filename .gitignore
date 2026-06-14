@@ -16,8 +16,8 @@ __pycache__/
 # Artifacts (large model files - regenerated via precompute.py)
 artifacts/
 
-# Submission CSVs (generated outputs)
-submission*.csv
+# Submission CSVs (exclude test runs, keep final)
+submission_test*.csv
 
 # OS
 .DS_Store
