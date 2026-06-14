@@ -47,12 +47,22 @@ The ranking methodology is a 5-stage funnel:
 *   **Reciprocal Rank Fusion (RRF)** for rank stabilization.
 *   **JD-Calibrated Heuristics:** To ensure our system strictly aligns with the core requirements of the job description, we apply deterministic multiplier heuristics to the baseline score: **+3.0** for explicit Vector DB production experience, and **+2.0** for explicitly building LTR/NDCG ranking systems.
 
+**How are multiple candidate signals combined into a final ranking?**
+Signals are combined using a deterministic, additive scoring function anchored by Reciprocal Rank Fusion. 
+1. The Lexical Rank (BM25) and Semantic Rank (BGE-Small) are inverted and summed to create a normalized baseline RRF score. 
+2. Extracted quantitative signals (e.g., years of experience) map to continuous scalar weights. 
+3. Extracted qualitative signals (e.g., "Shipped Pinecone in Production") trigger discrete heuristic multipliers (+3.0) that are added directly to the RRF score. 
+4. The final continuous value determines the absolute rank order.
+
 ---
 
 ## 4. Explainability & Data Validation
 
-**How are ranking decisions explained & how do you prevent hallucinations?**  
-candiRank features a deterministic Natural Language Generator (NLG) that outputs exact justifications for *why* a candidate was chosen. Because the NLG operates purely on extracted feature flags and quantitative metrics (e.g., Verified YOE, specific extracted frameworks) rather than relying on generative LLM synthesis, it cannot introduce unsupported skills because every explanation is generated only from extracted candidate attributes and verified feature flags.
+**How are ranking decisions explained?**  
+candiRank features a deterministic Natural Language Generator (NLG) that outputs exact, human-readable justifications for *why* a candidate was chosen. It explicitly highlights the specific qualitative signals (e.g., matching frameworks, production Vector DB tenure) and quantitative metrics (e.g., total Verified YOE) that elevated the candidate's score.
+
+**How do you prevent hallucinations or unsupported justifications?**  
+Because the NLG operates strictly on deterministic logic applied to extracted feature flags rather than relying on generative LLM synthesis, it is structurally constrained. It cannot introduce unsupported skills because every word in the explanation maps 1:1 directly to the candidate's verified attributes.
 
 **How does your solution handle inconsistent, low-quality, or suspicious profiles?**  
 We implemented a strict chronological **Honeypot Filter**. 
