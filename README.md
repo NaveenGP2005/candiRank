@@ -62,7 +62,7 @@ graph TD
 
 ### 1. Robust Honeypot & Fraud Filter `O(N)`
 * **Chronological Validation:** Uses strict checks (date parsing, overlapping full-time employment vs. undergraduate studies) and heuristic YOE anomaly detection to catch synthetic anomalies.
-* **Smart Soft-Penalties:** Rather than broadly penalizing non-traditional paths (like freelance work during college), only mathematically impossible timelines are hard-removed (dropping rejection rates from 11.5% to **3.1%**). Suspicious profiles receive an automated soft penalty.
+* **Smart Soft-Penalties:** Rather than broadly penalizing non-traditional paths (like freelance work during college), only mathematically impossible timelines are hard-removed (dropping rejection rates to **3.1%**). Suspicious profiles receive an automated soft penalty.
 
 ### 2. FlashText Feature Engineering `O(N)`
 * **Aho-Corasick Automaton:** Extracts over 20 specific technical features across 5 core verticals (Vector DBs, Search/Retrieval, Ranking/Evaluation, ML Frameworks, MLOps) instantly.
@@ -77,17 +77,16 @@ graph TD
 * This provides deep semantic understanding to evaluate whether a candidate's actual responsibilities match the true intent of the Senior AI Engineer Job Description.
 
 ### 5. Reciprocal Rank Fusion & JD-Calibrated Heuristics
-* **The "Feature Collapse" Discovery:** Initial iterations used a weak-supervised LightGBM model. However, sparse but high-value JD features (like production vector DB experience) collapsed below the decision tree split thresholds, causing the model to over-index on generic YOE.
-* **The Fix:** We pivoted to a highly calibrated heuristic reranker anchored by a **Reciprocal Rank Fusion (RRF)** score (merging Lexical and Semantic ranks) with precise, JD-aligned multipliers:
+* **JD-Calibrated Heuristics:** To ensure our system strictly aligns with the core requirements of the job description, we apply deterministic multiplier heuristics to the baseline score:
   * *Explicit Vector DB production experience (+3.0)*
   * *Ranking / NDCG / LTR experience (+2.0)*
-* **Audit Proven:** A raw text audit of our submitted Top 20 candidates confirmed **19/20 have explicit Information Retrieval / Search experience**, and **18/20 have explicitly built Ranking systems**.
+* **Audit Proven:** Manual audit of the highest-ranked candidates showed a strong concentration of Information Retrieval, Search Infrastructure, Ranking, and Vector Database experience.
 
 ---
 
 ## ⚡ Performance Summary
 
-candiRank is heavily optimized for CPU bottlenecks. On a standard CPU instance (16GB RAM):
+candiRank is heavily optimized for CPU-only execution. On a standard CPU instance (16GB RAM):
 
 | Pipeline Stage | Runtime | Component Type |
 |----------------|---------|----------------|
@@ -97,7 +96,7 @@ candiRank is heavily optimized for CPU bottlenecks. On a standard CPU instance (
 | **BM25 Retrieval** | `12.8s` | Lexical Index |
 | **BGE Embeddings** | `164.4s` | PyTorch CPU (Top 1000) |
 | **Rerank & NLG** | `1.1s` | Numpy Heuristics |
-| **Total Runtime** | **`~214.6s`** | **Budget: `290.0s`** |
+| **Total Runtime** | **`approximately 215 seconds`** | **Budget: `290.0s`** |
 
 ---
 

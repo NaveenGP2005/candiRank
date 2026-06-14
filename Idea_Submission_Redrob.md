@@ -1,7 +1,7 @@
 # Redrob India Runs Data and AI Challenge: Idea Submission
 
-**Team Name:** [Your Team Name]  
-**Team Leader Name:** Naveen GP  
+**Team Name:** !serious 
+**Team Leader Name:** Naveen G Patil  
 **Problem Statement:** Identifying elite Senior AI Retrieval/Ranking Engineers from 100,000 highly nuanced, synthetic candidate profiles within strict CPU runtime constraints.
 
 ---
@@ -45,7 +45,7 @@ The ranking methodology is a 5-stage funnel:
 *   **BM25 (Lexical)** for high-recall keyword matching.
 *   **BAAI/bge-small-en-v1.5 (Semantic)** for dense vector intent matching.
 *   **Reciprocal Rank Fusion (RRF)** for rank stabilization.
-*   **JD-Calibrated Heuristics:** We discovered that standard ML models (like LightGBM) suffered from "feature collapse" due to sparse pseudo-labels, ignoring critical JD requirements. We resolved this by applying deterministic multiplier heuristics: **+3.0** for production Vector DB experience, and **+2.0** for explicit LTR/NDCG ranking systems.
+*   **JD-Calibrated Heuristics:** To ensure our system strictly aligns with the core requirements of the job description, we apply deterministic multiplier heuristics to the baseline score: **+3.0** for explicit Vector DB production experience, and **+2.0** for explicitly building LTR/NDCG ranking systems.
 
 ---
 
@@ -98,13 +98,11 @@ graph TD
 ## 6. Results & Performance
 
 **What results or insights demonstrate ranking quality?**  
-Our heuristic anchor directly reflects the Job Description's hardest constraints. An independent raw-text audit of our final Top 20 submitted candidates confirmed extreme precision:
-*   **19 / 20** candidates have explicitly built Information Retrieval / Search infrastructure.
-*   **18 / 20** candidates have explicitly designed algorithmic Ranking systems (LTR, NDCG optimization).
+Our heuristic anchor directly reflects the Job Description's hardest constraints. Manual audit of the highest-ranked candidates showed a strong concentration of Information Retrieval, Search Infrastructure, Ranking, and Vector Database experience.
 
 **How does your solution meet the challenge’s runtime and compute constraints?**  
-candiRank is violently optimized for CPU bottlenecks. While embedding 100,000 profiles would take hours, our Lexical first-pass architecture reduces the embedding workload to just 1,000 profiles. 
-*   **Total execution time for 100,000 candidates:** `~214.6 seconds`.
+candiRank is heavily optimized for CPU-only execution. While embedding 100,000 profiles would take hours, our Lexical first-pass architecture reduces the embedding workload to just 1,000 profiles. 
+*   **Total execution time for 100,000 candidates:** `approximately 215 seconds`.
 *   **Competition Budget:** `290.0 seconds`.
 *   *We comfortably process the entire dataset, end-to-end, with over a minute to spare on standard CPU hardware.*
 
@@ -114,7 +112,7 @@ candiRank is violently optimized for CPU bottlenecks. While embedding 100,000 pr
 
 *   **FlashText:** Implements the Aho-Corasick algorithm for extracting hundreds of technical keywords simultaneously in `O(N)` time.
 *   **Rank-BM25:** A highly optimized implementation of BM25 for rapid, high-recall lexical search.
-*   **BAAI/bge-small-en-v1.5 & PyTorch:** Selected as the semantic embedding model due to its state-of-the-art performance-to-size ratio, generating dense representations of the Top 1,000 candidates locally on CPU.
+*   **BAAI/bge-small-en-v1.5 & PyTorch:** Selected for its strong retrieval quality and efficient CPU inference, generating dense representations of the Top 1,000 candidates locally.
 *   **Gradio & Hugging Face Spaces:** Used to instantly deploy an interactive, premium frontend application without complex React/Node.js boilerplate, allowing judges to test the ranking logic dynamically.
 
 ---
