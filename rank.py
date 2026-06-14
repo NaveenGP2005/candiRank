@@ -54,7 +54,7 @@ def main():
     parser = argparse.ArgumentParser(description="Redrob candidate ranker")
     parser.add_argument("--candidates", required=True, help="Path to candidates.jsonl or .jsonl.gz")
     parser.add_argument("--out", default="submission.csv", help="Output CSV path")
-    parser.add_argument("--top-k-bm25", type=int, default=600, help="BM25 first-pass top-K")
+    parser.add_argument("--top-k-bm25", type=int, default=1000, help="BM25 first-pass top-K")
     parser.add_argument("--top-k-rrf", type=int, default=500, help="RRF shortlist size")
     parser.add_argument("--demo", action="store_true", help="Demo mode: only process first 500 candidates")
     args = parser.parse_args()
@@ -124,7 +124,7 @@ def main():
     check_budget("Stage 5: Dense embed")
 
     # ── Stage 6: Reciprocal Rank Fusion ──────────────────────────────────────
-    print(f"\n[Stage 6] RRF fusion → top-{args.top_k_rrf}...")
+    print(f"\n[Stage 6] RRF fusion -> top-{args.top_k_rrf}...")
     from pipeline.dense_retriever import reciprocal_rank_fusion
     bm25_ranking = [c["candidate_id"] for c in bm25_candidates]
     rrf_top_ids, rrf_raw_scores = reciprocal_rank_fusion(
@@ -180,10 +180,10 @@ def main():
         s = score
         # Heavy penalty for consulting-only candidates
         if feat.get("consulting_only_flag"):
-            s *= 0.4
+            s *= 0.6
         # Moderate penalty if current employer is consulting
         elif is_consulting_current(cid):
-            s *= 0.7
+            s *= 0.85
         # Penalty for very long notice (>90 days)
         notice = feat.get("notice_period_days", 60)
         if notice > 90:
@@ -236,7 +236,7 @@ def main():
 
     total = elapsed()
     print(f"\n{'='*60}")
-    print(f"✓ Done! {len(rows)} candidates ranked in {total:.1f}s")
+    print(f"Done! {len(rows)} candidates ranked in {total:.1f}s")
     print(f"  Output: {args.out}")
     print(f"  Honeypots filtered: {len(flagged)}")
     print(f"  Budget used: {total:.1f}s / {BUDGET_SECONDS}s")

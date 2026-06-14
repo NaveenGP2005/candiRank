@@ -84,7 +84,7 @@ def check_temporal_impossibility(candidate: dict) -> tuple[bool, str]:
     for js, je, jtitle, jdur in job_windows:
         for es, ee in edu_windows:
             overlap = _months_overlap(js, je, es, ee)
-            if overlap > 12 and _is_senior_title(jtitle):
+            if overlap > 36 and _is_senior_title(jtitle):
                 return True, f"Senior role '{jtitle}' overlaps undergrad by {overlap:.0f} months"
 
     # Check: two simultaneous full-time jobs for >6 months
@@ -93,7 +93,7 @@ def check_temporal_impossibility(candidate: dict) -> tuple[bool, str]:
             s1, e1, t1, _ = job_windows[i]
             s2, e2, t2, _ = job_windows[j]
             overlap = _months_overlap(s1, e1, s2, e2)
-            if overlap > 6:
+            if overlap > 24:
                 return True, f"Simultaneous jobs: '{t1}' and '{t2}' for {overlap:.0f} months"
 
     return False, ""
@@ -121,7 +121,7 @@ def check_skill_hallucination(candidate: dict) -> tuple[bool, str]:
         if not any(w in all_career_text for w in skill_words):
             hallucinated.append(name)
 
-    if len(hallucinated) >= 3:
+    if len(hallucinated) >= 4:
         return True, f"Hallucinated skills: {hallucinated[:5]}"
     return False, ""
 
@@ -173,7 +173,7 @@ def check_impossible_experience(candidate: dict) -> tuple[bool, str]:
     current_year = datetime.now().year
     max_possible_yoe = current_year - earliest_grad
 
-    if yoe > max_possible_yoe + 2:  # 2yr buffer for early starts
+    if yoe > max_possible_yoe + 6:  # 6yr buffer for early starts
         return True, f"Claims {yoe:.1f} YOE but graduated {earliest_grad} (max ~{max_possible_yoe})"
     return False, ""
 

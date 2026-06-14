@@ -18,7 +18,8 @@ sentence transformers BGE E5 embedding model FAISS Pinecone Qdrant Weaviate
 Milvus OpenSearch Elasticsearch HNSW approximate nearest neighbor
 NDCG MAP MRR evaluation framework ranking metrics offline evaluation
 A/B testing learning to rank LambdaMART XGBoost gradient boosting
-recommendation system search relevance retrieval quality
+recommendation system search relevance retrieval quality marketplace ranking
+matching engines retrieval infrastructure search systems retrieval systems
 Python production deployment scaling inference optimization
 product company not consulting not services
 pre-LLM machine learning experience NLP information retrieval

@@ -72,7 +72,7 @@ def reciprocal_rank_fusion(
 
     merged = sorted(rrf_scores.keys(), key=lambda x: rrf_scores[x], reverse=True)
     rrf_score_array = [rrf_scores[d] for d in merged[:top_k]]
-    print(f"[rrf] Merged {len(rankings)} lists → top-{top_k} candidates")
+    print(f"[rrf] Merged {len(rankings)} lists -> top-{top_k} candidates")
     return merged[:top_k], rrf_score_array
 
 
