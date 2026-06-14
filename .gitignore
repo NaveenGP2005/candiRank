@@ -18,6 +18,7 @@ artifacts/
 
 # Submission CSVs (exclude test runs, keep final)
 submission_test*.csv
+*.zip
 
 # OS
 .DS_Store
