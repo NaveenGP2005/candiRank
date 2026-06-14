@@ -163,14 +163,9 @@ def score_candidates(
     Score candidates and return top-k as [(candidate_id, score), ...] best first.
     Falls back to weighted formula if no trained model.
     """
-    X = build_feature_matrix(feature_dicts, bm25_scores, semantic_scores, rrf_scores)
-
-    if model is not None:
-        raw_scores = model.predict(X)
-    else:
-        # Fallback: weighted linear combination
-        print("[reranker] No model, using weighted formula fallback")
-        raw_scores = weighted_score_fallback(feature_dicts, bm25_scores, semantic_scores, rrf_scores)
+    # Force weighted linear combination to preserve JD-specific weights
+    # (LightGBM trained on 50 samples was ignoring sparse features like Vector DBs)
+    raw_scores = weighted_score_fallback(feature_dicts, bm25_scores, semantic_scores, rrf_scores)
 
     # Sort and return top-k
     sorted_idx = np.argsort(raw_scores)[::-1][:top_k]
