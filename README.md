@@ -1,48 +1,55 @@
----
-title: candiRank
-emoji: 🚀
-colorFrom: purple
-colorTo: pink
-sdk: gradio
-sdk_version: 4.44.1
-python_version: 3.10.13
-app_file: app.py
-pinned: false
----
+# 🚀 candiRank: High-Precision Candidate Retrieval System
 
-<div align="center">
-  <img src="https://img.shields.io/badge/Status-Deployed-success?style=for-the-badge&logo=huggingface&logoColor=white" alt="Deployed on Hugging Face" />
-  <img src="https://img.shields.io/badge/Python-3.10-blue?style=for-the-badge&logo=python&logoColor=white" alt="Python 3.10" />
-  <img src="https://img.shields.io/badge/Gradio-4.44.1-orange?style=for-the-badge&logo=gradio&logoColor=white" alt="Gradio" />
-  
-  <br />
-  <br />
+[![Python](https://img.shields.io/badge/Python-3.10-blue?logo=python&logoColor=white)](https://www.python.org/)
+[![Gradio](https://img.shields.io/badge/Gradio-4.44.1-orange?logo=gradio&logoColor=white)](https://gradio.app/)
+[![PyTorch](https://img.shields.io/badge/PyTorch-CPU_Optimized-EE4C2C?logo=pytorch&logoColor=white)](https://pytorch.org/)
+[![Hugging Face Models](https://img.shields.io/badge/BAAI-bge--small--en-FFD21E?logo=huggingface&logoColor=black)](https://huggingface.co/BAAI/bge-small-en-v1.5)
+[![Scikit-Learn](https://img.shields.io/badge/scikit--learn-1.3.0-F7931E?logo=scikit-learn&logoColor=white)](https://scikit-learn.org/)
+[![Pandas](https://img.shields.io/badge/pandas-Data_Processing-150458?logo=pandas&logoColor=white)](https://pandas.pydata.org/)
+[![Deployed](https://img.shields.io/badge/Deployed-Hugging_Face_Spaces-green?style=flat&logo=huggingface&logoColor=white)](https://huggingface.co/spaces/NaveenGP2005/candiRank)
 
-  <h1>🚀 candiRank: High-Precision Candidate Retrieval System</h1>
-  
-  <p><b>An ultra-fast, production-ready candidate ranking engine built for the Redrob India Runs Data and AI Challenge.</b></p>
-  
-  <h3>
-    <a href="https://huggingface.co/spaces/NaveenGP2005/candiRank">🌐 Live Demo on Hugging Face Spaces</a>
-  </h3>
-</div>
+An ultra-fast, production-ready **Candidate Ranking Engine** built for the Redrob India Runs Data and AI Challenge. Designed specifically to identify **Senior AI Retrieval/Ranking Engineers**, the system ingests, filters, and processes 100,000 synthetic candidate profiles to output a high-confidence Top 100 Leaderboard in **under 4 minutes** on standard CPU hardware.
+
+### 🌐 [Live Interactive Demo on Hugging Face Spaces](https://huggingface.co/spaces/NaveenGP2005/candiRank)
 
 ---
 
-## 🎯 Overview
+## 📌 System Architecture
 
-**candiRank** is engineered specifically to identify **Senior AI Retrieval/Ranking Engineers**. The system ingests, filters, and processes 100,000 synthetic candidate profiles, outputting a high-confidence Top 100 Leaderboard in **under 4 minutes** on standard CPU hardware. 
+Our architecture balances extreme speed with rigorous recall. We abandoned slow "embed-everything" paradigms in favor of a highly optimized, multi-stage hybrid retrieval cascade.
 
-We achieved this by building a highly optimized, multi-stage retrieval cascade that completely abandons slow "embed-everything" architectures in favor of a lightning-fast hybrid pipeline.
+```mermaid
+graph TD
+    subgraph High-Speed Retrieval Pipeline
+        Raw[100,000 Candidates JSONL] -->|O N | Honeypot[Honeypot & Fraud Filter]
+        Honeypot -->|Aho-Corasick Automaton| FlashText[FlashText Feature Extractor]
+        FlashText --> Lexical[BM25 Lexical First-Pass]
+    end
+
+    subgraph Semantic Evaluation & Reranking
+        Lexical -->|Top 1000| Semantic[BGE-Small Dense Embeddings]
+        Semantic --> RRF[Reciprocal Rank Fusion]
+        RRF --> Heuristic[JD-Calibrated Heuristics +3.0 Vector DBs]
+    end
+
+    subgraph Output & Visualization
+        Heuristic -->|Top 100| NLG[NLG Justification Generator]
+        NLG --> CSV[submission.csv]
+        CSV --> UI[Interactive Gradio Dashboard]
+    end
+
+    style Raw fill:#FFD1DC,stroke:#333,stroke-width:1px
+    style Lexical fill:#FFE5B4,stroke:#333,stroke-width:1px
+    style Semantic fill:#D6EAF8,stroke:#333,stroke-width:1px
+    style UI fill:#FCF3CF,stroke:#333,stroke-width:1px
+```
 
 ---
 
-## 🏆 Key Architecture Highlights
-
-Our architecture balances extreme speed with rigorous recall, relying on several core innovations:
+## 🧠 Core Engineering Highlights
 
 ### 1. Robust Honeypot & Fraud Filter `O(N)`
-* **Chronological Validation:** Uses strict checks (e.g., date parsing, overlapping full-time employment vs. undergraduate studies) and heuristic YOE anomaly detection to catch synthetic anomalies.
+* **Chronological Validation:** Uses strict checks (date parsing, overlapping full-time employment vs. undergraduate studies) and heuristic YOE anomaly detection to catch synthetic anomalies.
 * **Smart Soft-Penalties:** Rather than broadly penalizing non-traditional paths (like freelance work during college), only mathematically impossible timelines are hard-removed (dropping rejection rates from 11.5% to **3.1%**). Suspicious profiles receive an automated soft penalty.
 
 ### 2. FlashText Feature Engineering `O(N)`
@@ -64,9 +71,6 @@ Our architecture balances extreme speed with rigorous recall, relying on several
   * *Ranking / NDCG / LTR experience (+2.0)*
 * **Audit Proven:** A raw text audit of our submitted Top 20 candidates confirmed **19/20 have explicit Information Retrieval / Search experience**, and **18/20 have explicitly built Ranking systems**.
 
-### 6. Natural Language Generator (NLG)
-* The final pipeline outputs deterministic, highly interpretable justifications for *why* a candidate was ranked, calling out both strengths (e.g., YOE, Product Company background) and specific technical/availability gaps.
-
 ---
 
 ## ⚡ Performance Summary
@@ -85,38 +89,60 @@ candiRank is heavily optimized for CPU bottlenecks. On a standard CPU instance (
 
 ---
 
-## 🛠 Local Setup & Execution
+## 📂 Repository Structure
 
-### 1. Precompute Models
-Run this once to download the local `BAAI/bge-small-en-v1.5` model to the `artifacts/` folder:
-```bash
-python precompute.py
-```
-
-### 2. Generate the Submission
-Run the complete pipeline against the full 100,000 candidate dataset:
-```bash
-python rank.py --candidates "dataset/[PUB] India_runs_data_and_ai_challenge/India_runs_data_and_ai_challenge/candidates.jsonl" --out submission.csv
-```
-
-### 3. Validate Output
-Validate the generated CSV format against the competition rubric:
-```bash
-python "dataset/[PUB] India_runs_data_and_ai_challenge/India_runs_data_and_ai_challenge/validate_submission.py" submission.csv
+```text
+candiRank/
+├── pipeline/                     # Core pipeline modules
+│   ├── dataloader.py             # I/O ingestion and formatting
+│   ├── honeypot.py               # Chronological anomaly detection filter
+│   ├── features.py               # FlashText Aho-Corasick extraction
+│   ├── lexical.py                # BM25 First-pass indexing
+│   ├── semantic.py               # BAAI/bge-small embedding generation
+│   ├── reranker.py               # RRF and Heuristic weightings
+│   └── nlg.py                    # Natural Language justification engine
+├── app.py                        # Interactive Gradio dashboard application
+├── rank.py                       # Main execution script for the challenge
+├── precompute.py                 # Helper to cache Hugging Face models locally
+├── requirements.txt              # Strict pinned dependency configuration
+├── README.md                     # Documentation and architecture breakdown
+└── artifacts/                    # Cached models and serialized outputs
 ```
 
 ---
 
-## 🎨 Interactive Gradio Demo
+## 🚀 Running & Deploying the App
+
+### Option A: Local Dev Mode (Pipeline Execution)
+
+1. **Clone & Install Dependencies**:
+   ```bash
+   pip install -r requirements.txt
+   ```
+2. **Precompute Models**:
+   Run this once to download the local `BAAI/bge-small-en-v1.5` model to the `artifacts/` folder:
+   ```bash
+   python precompute.py
+   ```
+3. **Generate the Submission**:
+   Run the complete pipeline against the full 100,000 candidate dataset:
+   ```bash
+   python rank.py --candidates "dataset/candidates.jsonl" --out submission.csv
+   ```
+4. **Validate Output**:
+   Validate the generated CSV format against the competition rubric:
+   ```bash
+   python validate_submission.py submission.csv
+   ```
+
+### Option B: Interactive Gradio Dashboard
 
 We've built a full Gradio web dashboard to explore the candidates dynamically, view the leaderboard, and inspect the specific scoring reasoning for each candidate.
-
-You can view the **[Live Deployment on Hugging Face Spaces](https://huggingface.co/spaces/NaveenGP2005/candiRank)**, or run it locally:
 
 ```bash
 python app.py
 ```
-Open `http://127.0.0.1:7860` in your browser.
+Open **`http://127.0.0.1:7860`** in your browser.
 
 ---
 
