@@ -56,28 +56,44 @@ The system strictly aligns with job requirements:
 
 ```mermaid
 graph TD
-    A["📥 100,000 Candidates<br/>JSONL"] -->|O(N)| B["🚨 Honeypot Filter<br/>Chronological Validation"]
-    B -->|Fast| C["⚡ FlashText Extraction<br/>Aho-Corasick Automaton"]
-    C -->|Instant| D["🔤 BM25 Lexical Index<br/>First-Pass Retrieval"]
-    
-    D -->|Top 1000| E["🧠 BGE-Small Embeddings<br/>Semantic Understanding"]
-    E -->|Dense Vectors| F["🔗 Reciprocal Rank Fusion<br/>Score Normalization"]
-    F -->|Baseline| G["📊 JD-Calibrated Heuristics<br/>Final Weighting"]
-    
-    G -->|Top 100| H["💬 NLG Justifier<br/>Deterministic Explanations"]
-    H -->|Export| I["📄 submission.csv"]
-    H -->|Display| J["🎨 Gradio Dashboard<br/>Interactive Exploration"]
+    subgraph Pipeline["High-Speed Retrieval Pipeline"]
+        A["100K Candidates JSONL"]
+        B["Honeypot Filter"]
+        C["FlashText Extractor"]
+        D["BM25 Lexical Index"]
+        A -->|Linear Scan| B
+        B -->|3.1% Filtered| C
+        C -->|20+ Features| D
+    end
 
-    style A fill:#FFD1DC
-    style B fill:#FFE5B4
-    style C fill:#FFE5B4
-    style D fill:#FFE5B4
-    style E fill:#D6EAF8
-    style F fill:#D6EAF8
-    style G fill:#D6EAF8
-    style H fill:#FCF3CF
-    style I fill:#FCF3CF
-    style J fill:#FCF3CF
+    subgraph Semantic["Semantic Evaluation & Reranking"]
+        E["BGE-Small Embeddings"]
+        F["Reciprocal Rank Fusion"]
+        G["JD-Calibrated Heuristics"]
+        D -->|Top 1000| E
+        E -->|Semantic Sim| F
+        F -->|Baseline Score| G
+    end
+
+    subgraph Output["Output & Visualization"]
+        H["Deterministic NLG"]
+        I["submission.csv"]
+        J["Gradio Dashboard"]
+        G -->|Top 100| H
+        H -->|Export| I
+        H -->|Display| J
+    end
+
+    style A fill:#FFD1DC,stroke:#333,stroke-width:2px
+    style B fill:#FFE5B4,stroke:#333,stroke-width:2px
+    style C fill:#FFE5B4,stroke:#333,stroke-width:2px
+    style D fill:#FFE5B4,stroke:#333,stroke-width:2px
+    style E fill:#D6EAF8,stroke:#333,stroke-width:2px
+    style F fill:#D6EAF8,stroke:#333,stroke-width:2px
+    style G fill:#D6EAF8,stroke:#333,stroke-width:2px
+    style H fill:#FCF3CF,stroke:#333,stroke-width:2px
+    style I fill:#FCF3CF,stroke:#333,stroke-width:2px
+    style J fill:#FCF3CF,stroke:#333,stroke-width:2px
 ```
 
 ---
@@ -454,10 +470,10 @@ This project is released under the **MIT License**. See [`LICENSE`](LICENSE) for
 If you use candiRank in your research or project, please cite:
 
 ```bibtex
-@software{candirank2024,
+@software{candirank2026,
   author = {Naveen G Patil},
   title = {candiRank: High-Precision Candidate Retrieval System},
-  year = {2024},
+  year = {2026},
   url = {https://github.com/NaveenGP2005/candiRank}
 }
 ```
