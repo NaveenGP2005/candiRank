@@ -1,7 +1,7 @@
 ---
 title: CandidateRank - Redrob AI Challenge
 emoji: 🎯
-colorFrom: violet
+colorFrom: purple
 colorTo: indigo
 sdk: gradio
 sdk_version: "4.44.0"
